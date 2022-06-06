@@ -16,10 +16,10 @@ const App = () => {
 // Fetch person data from Json-Server
   useEffect(() => 
     personService
-      .getAll() 
-      .then((initialPersons) => {
-        setPersons(initialPersons);
-        setPersonToShow(initialPersons)
+      .getAll('http://localhost:3001/api/persons')
+      .then((res) => {
+        setPersons(res.data);
+        setPersonToShow(res.data)
   }), [])
 
 // Handle name change  
