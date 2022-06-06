@@ -1,5 +1,5 @@
 import axios from "axios"
-const baseUrl = 'http://localhost:3001/persons'
+const baseUrl = 'http://localhost:3001/api/persons'
 
 /// "Resources are fetched from the served with HTTP GET requests. URL notes/3 will return the note that has the id number 3. A get request to the notes URL would return a list of all notes."
 const getAll = () => {
