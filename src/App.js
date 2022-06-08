@@ -4,6 +4,7 @@ import Filter from './components/Filter';
 import Notification from './components/Notification';
 import PersonForm from './components/PersonForm';
 import './index.css'
+import axios from 'axios';
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -15,8 +16,8 @@ const App = () => {
 
 // Fetch person data from Json-Server
   useEffect(() => 
-    personService
-      .getAll('http://localhost:3001/api/persons')
+    axios
+      .get('http://localhost:3001/api/persons')
       .then((res) => {
         setPersons(res.data);
         setPersonToShow(res.data)
