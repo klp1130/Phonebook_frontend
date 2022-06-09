@@ -73,7 +73,7 @@ const App = () => {
               setPersonToShow(persons.concat(returnedPerson))
 
               setErrorMessage(`Add ${newName}`)
-              setMessageState('succes')
+              setMessageState('success')
               setTimeout(() => {setErrorMessage(null)}, 500)
               setNewName('')
               setNewNumber('')
