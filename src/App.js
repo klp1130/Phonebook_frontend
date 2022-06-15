@@ -19,7 +19,6 @@ const App = () => {
       .getAll()
       .then((res) => {
         setPersons(res.data);
-        setPersonToShow(res.data)
   }), [])
 
 // Handle name change  
@@ -45,13 +44,11 @@ const App = () => {
 
         personService.update(id, changedPerson).then(returnedPerson => {
           setPersons(persons.map(p => p.id !== id ? p : returnedPerson))
-          setPersonToShow(persons.map(p => p.id !== id? p : returnedPerson))
         }).catch(error => {
-          setErrorMessage(`Contact info for ${newName} has alreadt been removed from server`)
+          setErrorMessage(`Contact info for ${newName} has already been removed from server`)
           setMessageState('error')
           setTimeout(() => setErrorMessage(null), 5000)
           setPersons(persons.filter(p => p.id !== id))
-          setPersonToShow(personToShow.filter(p => p.id !== id))
         })
       }
       setErrorMessage(`Modified number for ${newName}`)
@@ -69,7 +66,6 @@ const App = () => {
           .create(personObj)
             .then(returnedPerson => {
               setPersons(persons.concat(returnedPerson))
-              setPersonToShow(persons.concat(returnedPerson))
 
               setErrorMessage(`Add ${newName}`)
               setMessageState('success')
@@ -98,7 +94,6 @@ const App = () => {
     if (window.confirm(`Delete ${name} ?`)) {
       personService.deletePerson(id).then(response => {
         setPersons(persons.filter(p=> p.id !==id))
-        setPersonToShow(personToShow.filter(p => p.id !== id))
       })
     }
   }
