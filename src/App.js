@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
-import personService from './services/persons';
+
 import Filter from './components/Filter';
 import Notification from './components/Notification';
 import PersonForm from './components/PersonForm';
 import './index.css'
+import { Persons } from './components/Persons';
+import personService from './services/persons';
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -119,6 +121,7 @@ const App = () => {
          handleNumberChange={handleNumberChange} 
          />
       <h2>Numbers</h2>
+      <Persons persons={persons} personToShow={personToShow} setPersons={setPersons} />
         {personToShow.map((person, i) => {
           return (
               <div key={i}>
