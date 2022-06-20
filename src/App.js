@@ -12,7 +12,6 @@ const App = () => {
   const [allPersons, setAllPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
- // const [personToShow, setPersonToShow] = useState([])
  const [newFilter, setNewFilter] = useState('')
   const [message, setMessage] = useState(null)
 
