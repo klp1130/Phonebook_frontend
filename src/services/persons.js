@@ -13,7 +13,7 @@ const create = newObject => {
     return request.then(response => response.data)
 }
 
-const deletePerson = id => {
+const remove = id => {
     const request = axios.delete(`${baseUrl}/${id}`)
     return request.then(response => response.data)
 }
@@ -25,4 +25,4 @@ const update = (id, updatedObject) => {
 }
 
 
-export default { getAll , create , deletePerson , update }
+export default { getAll , create , remove , update }
