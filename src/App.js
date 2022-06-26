@@ -26,6 +26,7 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
+    
     const person = allPersons.filter((person) =>
         person.name === newName
     )
@@ -97,7 +98,7 @@ const App = () => {
     const personId = filteredPerson[0].id
     if (window.confirm(`Delete ${personName} ?`)) {
       personService
-        .remove(personId)
+        .deletePerson(personId)
       console.log(`${personName} successfully deleted`)
       setMessage(
         `${personName} was successfully deleted`
