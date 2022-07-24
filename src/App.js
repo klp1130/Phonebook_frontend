@@ -55,7 +55,7 @@ const App = () => {
           setMessage(`Added ${newName}`)
           setTimeout(() => setMessage(null), timer)
         }).catch(error => {
-          setErrorMessage(error.response.data.error)
+          setErrorMessage(error.response.error)
           setTimeout(() => setErrorMessage(null), timer)
         })
       }
