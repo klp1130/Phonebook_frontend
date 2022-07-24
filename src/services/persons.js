@@ -13,6 +13,11 @@ const create = newObject => {
     return request.then(response => response.data)
 }
 
+const query = (name) => {
+    const request = axios.get(`${baseUrl}/query/${name}`)
+    return request.then(response => response.data)
+} 
+
 const remove = id => {
     const request = axios.delete(`${baseUrl}/${id}`)
     return request.then(response => response.data)
@@ -25,4 +30,4 @@ const update = (id, updatedObject) => {
 }
 
 
-export default { getAll , create , remove , update }
+export default { getAll , create , query, remove , update }
