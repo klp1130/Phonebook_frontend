@@ -29,29 +29,18 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    personService
-      .query(newName)
-      .then(person => {
-        const newObject = {
-          'name': newName,
-          'number': newNumber
-        }
-        if (person) {
-          const message = `${newName} is already added to phonebook, replace the old number with a new one?`
-          if (window.confirm(message)) {
-            personService.update(person.id, newObject).then(() => {
-              personService.getAll().then(data => setPersons(data))
-              setMessage(`Added ${newName}`)
-              setTimeout(() => setMessage(null), timer)
-            }).catch(error => {
-              setErrorMessage(error.response.data.error)
-              setTimeout(() => setErrorMessage(null), timer)
-            })
-          }
-        } else {
-          personService.create(newObject).then(() => {
+
+    personService.query(newName).then(person => {
+      const newObject = {
+        'name': newName,
+        'number': newNumber,
+      }
+
+      if (person) {
+        const message = `${newName} is already added to phonebook, replace the old number with a new one?`
+        if (window.confirm(message)) {
+          personService.update(person.id, newObject).then(() => {
             personService.getAll().then(data => setPersons(data))
-            setNewName('')
             setMessage(`Added ${newName}`)
             setTimeout(() => setMessage(null), timer)
           }).catch(error => {
@@ -59,29 +48,21 @@ const App = () => {
             setTimeout(() => setErrorMessage(null), timer)
           })
         }
-      })
-    }
-
-    
-/*
-  const deletePerson = (id) => {
-    const filteredPerson = allPersons.filter(person => person.id === id)
-    const personName = filteredPerson[0].name
-    const personId = filteredPerson[0].id
-    if (window.confirm(`Delete ${personName} ?`)) {
-      personService
-        .remove(personId)
-      console.log(`${personName} successfully deleted`)
-      setMessage(
-        `${personName} was successfully deleted`
-      )
-      setAllPersons(allPersons.filter(person => person.id !== personId))
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    }
+      } else {
+        personService.create(newObject).then(() => {
+          personService.getAll().then(data => setPersons(data))
+          setNewName('')
+          setMessage(`Added ${newName}`)
+          setTimeout(() => setMessage(null), timer)
+        }).catch(error => {
+          setErrorMessage(error.response.data.error)
+          setTimeout(() => setErrorMessage(null), timer)
+        })
+      }
+    })
   }
-*/
+
+  
 
   return (
     <div>
@@ -98,7 +79,7 @@ const App = () => {
       <Filter searchName={searchName} setSearchName={setSearchName} />
       <Title name={'Add a new'} />
       <PersonForm
-         submit={handleSubmit} 
+         handleSubmit={handleSubmit} 
          newName= {newName} 
          setNewName={setNewName} 
          newNumber={newNumber} 

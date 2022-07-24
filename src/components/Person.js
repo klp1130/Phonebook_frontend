@@ -8,7 +8,7 @@ const Person = (props) => {
     const message = `Delete ${person.name}`
 
     if (window.confirm(message)) {
-      personService.delete(person.id)
+      personService.remove(person.id)
       personService.getAll().then(data => setPersons(data))
     }
   }
