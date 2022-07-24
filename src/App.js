@@ -4,142 +4,89 @@ import Filter from './components/Filter';
 import Notification from './components/Notification';
 import PersonForm from './components/PersonForm';
 import './index.css'
-import Content from './components/Content';
+import Persons from './components/Persons';
 import personService from './services/persons';
+import { Title } from './components/Title';
 
 const App = () => {
   const [persons, setPersons] = useState([])
-  const [allPersons, setAllPersons] = useState([])
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState('')
- const [newFilter, setNewFilter] = useState('')
+  const [newName, setNewName ] = useState('')
+  const [newNumber, setNewNumber ] = useState('')
+  const [searchName, setSearchName] = useState('')
   const [message, setMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
+  
 
-// Fetch person data from Json-Server
-    useEffect(() => {
-      personService
-        .getAll()
-        .then(initialPersons => {
-        setAllPersons(initialPersons)
-      })
-    }, [])
+  const timer = 300
 
-  const addPerson = (event) => {
+  useEffect(() => {
+    personService
+      .getAll()
+      .then(data => {
+      setPersons(data)
+    })
+  }, [])
+
+  const handleSubmit = (event) => {
     event.preventDefault()
-    const person = allPersons.filter((person) =>
-        person.name === newName
-    )
 
-    const personToAdd = person[0]
-    const updatedPerson = { ...personToAdd, number: newNumber }
-
-    if (person.length !== 0) {
-      if (window.confirm(`${personToAdd.name} is already added to the phonebook, replace the old number with a new one ?`)) {
-        personService
-          .update(updatedPerson.id, updatedPerson).then(returnedPerson => {
-            console.log(`${returnedPerson.name} successfully updated`)
-            setAllPersons(allPersons.map(personItem => personItem.id !== personToAdd.id ? personItem : returnedPerson))
-            setNewName('')
-            setNewNumber('')
-            setMessage(
-              `${updatedPerson.name} was successfully updated`
-            )
-            setTimeout(() => {
-              setMessage(null)
-            }, 5000)
-          })
-          .catch((error) => {
-            console.log(error)
-            setAllPersons(allPersons.filter(person => person.id !== updatedPerson.id))
-            setNewName('')
-            setNewNumber('')
-            setMessage(
-              `[ERROR] ${updatedPerson.name} was already deleted from server`
-            )
-            setTimeout(() => {
-              setMessage(null)
-            }, 5000)
-          })
+    personService.query(newName).then(person => {
+      const newObject = {
+        'name': newName,
+        'number': newNumber,
       }
-    } else {
-        const personToAdd = {
-            name: newName,
-            number: newNumber
-          }
-          personService
-            .create(personToAdd)
-            .then(returnedPerson => {
-              setAllPersons(allPersons.concat(returnedPerson))
-              setNewName('')
-              setNewNumber('')
-              setMessage(
-                `${newName} was successfully added`
-              )
-              setTimeout(() => {
-                setMessage(null)
-              }, 5000)
-            })
-            .catch(error => {
-              setMessage(
-                `[ERROR] ${error.response.data.error}`
-              )
-              setTimeout(() => {
-                setMessage(null)
-              }, 5000)
-              console.log(error.response.data)
-            })
-    }
+
+      if (person) {
+        const message = `${newName} is already added to phonebook, replace the old number with a new one?`
+        if (window.confirm(message)) {
+          personService.update(person.id, newObject).then(() => {
+            personService.getAll().then(data => setPersons(data))
+            setMessage(`Added ${newName}`)
+            setTimeout(() => setMessage(null), timer)
+          }).catch(error => {
+            setErrorMessage(error.response.data.error)
+            setTimeout(() => setErrorMessage(null), timer)
+          })
+        }
+      } else {
+        personService.create(newObject).then(() => {
+          personService.getAll().then(data => setPersons(data))
+          setNewName('')
+          setMessage(`Added ${newName}`)
+          setTimeout(() => setMessage(null), timer)
+        }).catch(error => {
+          setErrorMessage(error.response.error)
+          setTimeout(() => setErrorMessage(null), timer)
+        })
+      }
+    })
   }
 
-  const deletePerson = (id) => {
-    const filteredPerson = allPersons.filter(person => person.id === id)
-    const personName = filteredPerson[0].name
-    const personId = filteredPerson[0].id
-    if (window.confirm(`Delete ${personName} ?`)) {
-      personService
-        .remove(personId)
-      console.log(`${personName} successfully deleted`)
-      setMessage(
-        `${personName} was successfully deleted`
-      )
-      setAllPersons(allPersons.filter(person => person.id !== personId))
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    }
-  }
-
-  const handleNameChange = (event) => {
-    setNewName(event.target.value)
-  }
-
-  const handleNumberChange = (event) => {
-    setNewNumber(event.target.value)
-  }
-
-  const handleFilterChange = (event) => {
-    setNewFilter(event.target.value)
-    const regex = new RegExp( newFilter, 'i' );
-    const filteredPersons = () => allPersons.filter(person => person.name.match(regex))
-    setPersons(filteredPersons)
-  }
+  
 
   return (
     <div>
-      <h2>Phonebook</h2>   
+      <Title name={'Phonebook'} />
+      {
+        message && 
+        <Notification message={message} />
+      }
+      {
+        errorMessage &&
+        <Notification message={message} error={true} />  
+      }  
 
-      <Notification message={message} />  
-      <Filter value={newFilter} onChange={handleFilterChange} />
-      <h2>Add new person</h2>
+      <Filter searchName={searchName} setSearchName={setSearchName} />
+      <Title name={'Add a new'} />
       <PersonForm
-         submit={addPerson} 
+         handleSubmit={handleSubmit} 
          newName= {newName} 
-         handleNameChange={handleNameChange} 
+         setNewName={setNewName} 
          newNumber={newNumber} 
-         handleNumberChange={handleNumberChange} 
+         setNewNumber={setNewNumber} 
          />
-      <h2>Numbers</h2>
-      <Content persons={persons} allPersons={allPersons} deletePerson={deletePerson} />    
+      <Title name={'Numbers'} />
+      <Persons persons={persons} searchName={searchName} setPersons={setPersons} />
     </div>
   )
 }

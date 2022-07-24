@@ -8,21 +8,26 @@ const getAll = () => {
 }
 
 /// "Creating a new resources for storing a note is done by making an HTTP POST request to the notes URL"
-const create = newObject => {
+const create = (newObject) => {
     const request = axios.post(baseUrl, newObject)
     return request.then(response => response.data)
 }
 
-const remove = id => {
+const query = (name) => {
+    const request = axios.get(`${baseUrl}/query/${name}`)
+    return request.then(response => response.data)
+} 
+
+const remove = (id) => {
     const request = axios.delete(`${baseUrl}/${id}`)
     return request.then(response => response.data)
 }
 
 /// "The new note is then sent with a PUT request to the backend where it will replace the old object."
-const update = (id, updatedObject) => {
-    const request = axios.put(`${baseUrl}/${id}`, updatedObject)
+const update = (id, newObject) => {
+    const request = axios.put(`${baseUrl}/${id}`, newObject)
     return request.then(response => response.data)
 }
 
 
-export default { getAll , create , remove , update }
+export default { getAll , create , query, remove , update }

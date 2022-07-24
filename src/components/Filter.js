@@ -1,8 +1,15 @@
 import React from 'react'
+import { handleChange } from '../utils'
 
-const Filter = ({value, onChange}) =>
-    <div>
-        filter shown with <input value={value} onChange={onChange} />
-    </div>
+const Filter = (props) => {
+    const { searchName, setSearchName } = props
+  
+    return (
+      <div>
+        Filter shown with: <input value={searchName} onChange={handleChange(setSearchName)} />
+      </div>
+    )
+  }
+  
 
 export default Filter
